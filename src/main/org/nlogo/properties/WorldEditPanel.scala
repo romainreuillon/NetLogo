@@ -57,9 +57,27 @@ class WorldEditPanel(widget: Editable, parser: ParserServices, colorizer: Colori
 
     addProperties(modelPanel, settings.getModelProperties.asScala, panelGridbag)
 
+    val advancedPanel = new JPanel() {
+      setBorder(new TitledBorder("Advanced"))
+      setLayout(new GridBagLayout())
+      add(new javax.swing.JButton(new javax.swing.AbstractAction("Preview Commands Editor") {
+        def actionPerformed(evt: java.awt.event.ActionEvent): Unit = {
+          val app = org.nlogo.app.App.app
+          app.workspace.previewCommands =
+            app.previewCommandsEditor.getPreviewCommands(new org.nlogo.app.ModelSaver(app).save, app.workspace.getModelPath)
+        }
+      }))
+    }
+
+    val bottomPanel = new JPanel() {
+      setLayout(new BorderLayout())
+      add(modelPanel, BorderLayout.CENTER)
+      add(advancedPanel, BorderLayout.EAST)
+    }
+
     add(worldPanel, BorderLayout.NORTH)
     add(viewPanel, BorderLayout.CENTER)
-    add(modelPanel, BorderLayout.SOUTH)
+    add(bottomPanel, BorderLayout.SOUTH)
 
     positionChoices.setSelectedIndex(settings.getSelectedLocation())
     selectPosition(
